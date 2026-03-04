@@ -8,11 +8,11 @@ else wfol="${0%/*}";
 fi; cd $wfol; 
 ##########################
 ######### get word #######
+mv $wfol/page/img/* -t $HOME/logs/t 2>/dev/null; 
 mkdir -pm 775 $wfol/page/img/s 2>/dev/null; 
 mkdir -pm 775 $wfol/log 2>/dev/null; 
 mkdir -pm 775 $wfol/up 2>/dev/null; 
 ######### word variables #
-mv $wfol/page/img/* -t $HOME/logs/t 2>/dev/null; 
 ########
 wlog=($(basename -s ".log" $wfol/w/*)); 
 wzup=($(basename -s ".log" $wfol/up/*)); 
@@ -66,8 +66,8 @@ rm ${wfol}/page/img/${ww}_p.jpg 2>/dev/null;
 ##########################
 convert -gravity center -background "#f5f5f5" "${wfol}/log/${ww}.jpg" -extent ${mz}x${mz16} ${wfol}/page/img/s/${ww}_p.jpg 2>/dev/null;
 convert ${wfol}/page/img/s/${ww}_p.jpg -resize 1440 ${wfol}/page/img/s/${ww}.jpg 2>/dev/null; 
-rm ${wfol}/page/img/s/${ww}_p.jpg 2>/dev/null;
 ##########################
+rm ${wfol}/page/img/s/${ww}_p.jpg 2>/dev/null; 
 rm "${wfol}/log/${ww}.jpg" "${wfol}/log/${ww}.xml"; 
 cp $wfol/w/$ww.log $wfol/up/$ww.log 2>/dev/null; 
 ##########################
