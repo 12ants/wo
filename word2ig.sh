@@ -69,8 +69,9 @@ convert -gravity center -background "#f5f5f5" "${wfol}/log/${ww}.jpg" -extent ${
 echo; echo $((ko++)); echo; 
 convert ${wfol}/img/${ww}_p.jpg -resize 1440 ${wfol}/img/${ww}.jpg 2>/dev/null; 
 rm ${wfol}/img/${ww}_p.jpg 2>/dev/null; 
+rm ${wfol}/img/s/${ww}_p.jpg 2>/dev/null; 
 ##########################
-echo $((ko++)); echo; 
+echo; echo $((ko++)); echo; 
 ##########################
 convert -gravity center -background "#f5f5f5" "${wfol}/log/${ww}.jpg" -extent ${mz}x${mz16} ${wfol}/img/s/${ww}_p.jpg 2>/dev/null;
 convert ${wfol}/img/s/${ww}_p.jpg -resize 1440 ${wfol}/img/s/${ww}.jpg 2>/dev/null; 
@@ -78,25 +79,25 @@ convert ${wfol}/img/s/${ww}_p.jpg -resize 1440 ${wfol}/img/s/${ww}.jpg 2>/dev/nu
 echo; echo $((ko++)); echo; 
 ##########################
 rm "${wfol}/log/${ww}.jpg" "${wfol}/log/${ww}.xml"; 
-
+##########################
 cp $wfol/w/$ww.log $wfol/up/$ww.log 2>/dev/null; 
-printf %b "\n-\e222b"; 
+printf %b "\n-\e[222b"; 
 ##########################
 sed -i '/<\/div><\/body><\/html>/d' $wfol/index.html; 
 ##########################
 printf %b "\n-\e[222b\n$(date --rfc-email)\n$ww\n" >> $HOME/logs/wlog.log; 
 ##########################
-printf %b "<br><hl><br><div class="kk"><code>$(cat ${wfol}/w/${ww}.log|sed "i<br>")</code><br><img src="/img/${ww}.jpg"></div><br><hl><br>
+printf %b "<br><hl><br><div class="kk"><code>$(cat ${wfol}/w/${ww}.log|sed "i<br>")</code><br><img src="https://raw.githubusercontent.com/12ants/iimg/main/${ww}.jpg"></div><br><hl><br>
 </div></body></html>
 "|tee -a ${wfol}/index.html; 
-printf %b "-\e222b\n\n"; 
+printf %b "-\e[222b\n\n"; 
 pwdd="$(pwd)"; cd ${wfol}; 
 ##########################
 printf %b "\n\n -- run from: $wfol\n -- $ww --\n\n"; 
 ##########################
 done; 
 ##########################
-echo $((ko++)); 
+echo; echo $((ko++)); echo; 
 (date --rfc-email; echo $wfol/$igword)|tee -a $HOME/logs/wl.log; 
 ##########################
 cd $wfol; 
@@ -113,7 +114,7 @@ if printf %b "$0"|grep -qE "bash|-bash"; then wfol="${PWD}"; else wfol="${0%/*}"
 ##########################
 igword="$(ls -1rt --group-directories-first $wfol/img|tail -n1)"; igcap="$(sed -n 4p $wfol/w/${igword/.*/}.log)"; igaccount="17841477140456200"; igtoken="IGAAIcnwJCEa1BZAFktNTg4cWZAyZAXZAWb3VWWjNGbnRBZADBIYU5kakdmbmdGV2RHMkR3WDhpR2ppeXh5Mkc0VkdsVVdScFRRMllBWjFXTzdXemZAfTm9oa0xtTTBRQlJXVzBtTWlpX0pYbDB1ZADZAiUUJUVEpRQmt2Um5MSWpFR2pVawZDZD"; 
 ##########################
-echo $((ko++)); 
+echo; echo $((ko++)); echo; 
 ##########################
 iimgf="$HOME/gh/iimg"; 
 ##########################
@@ -123,17 +124,26 @@ rm $wfol/img/s/$igword;
 rm $wfol/img/$igword;  
 ##########################
 cd $iimgf; 
+printf %b "-\e[222b"; 
 git add ./; 
 git commit -a -m gg; 
 git push; 
-echo; 
-cd $OLDPWD; 
-for i in {1..18}; do echo "$i"; sleep 1; done; echo;
+printf %b "-\e[222b"; 
+cd $wfol; 
+printf %b "-\e[222b"; 
+
+
+git add ./; git commit -a -m gg; git push; 
+printf %b "-\e[222b\n"; 
+cd $pwdd; 
+for i in {1..18}; do echo "$i"; sleep 1; done; echo; 
 ##########################
-igfeedurl="https://raw.githubusercontent.com/12ants/iimg/main/${igword}"; igstoryurl="https://raw.githubusercontent.com/12ants/iimg/main/s/${igword}"; printf %b "\n--\n"; printf %b "feed  - $igfeedurl\n"; printf %b "\n--\n"; printf %b "story - $igstoryurl\n"; 
+igfeedurl="https://raw.githubusercontent.com/12ants/iimg/main/${igword}"; 
+igstoryurl="https://raw.githubusercontent.com/12ants/iimg/main/s/${igword}"; 
+printf %b "\n --\n"; printf %b " -- feed  - $igfeedurl"; printf %b "\n --\n"; printf %b " -- story - $igstoryurl"; 
 ####
 #### post to feed 
-for i in {1..8}; do printf %b "$i"; sleep 1; done; printf %b "\n -- uploading from url: $igfeedurl\n -- to stories ...\n"; igfeed="$(curl -sX POST "https://graph.instagram.com/v25.0/${igaccount}/media" -F "image_url=${igfeedurl}" -F "caption=${igcap}" -F "access_token=${igtoken}"|cut -f2- -d":"|tr -d '\"{}')"; 
+for i in {1..8}; do echo "$i"; sleep 1; done; printf %b "\n -- uploading from url: $igfeedurl\n -- to feed --\n\n"; igfeed="$(curl -sX POST "https://graph.instagram.com/v25.0/${igaccount}/media" -F "image_url=${igfeedurl}" -F "caption=${igcap}" -F "access_token=${igtoken}"|cut -f2- -d":"|tr -d '\"{}')"; 
 echo "15"; for i in {1..15}; do echo "$i"; sleep 1; done; 
 igfeed2="$(curl -sX POST "https://graph.instagram.com/v25.0/"${igaccount}"/media_publish" -H "Content-Type: application/json" -H "Authorization: Bearer "${igtoken}"" -d "{ "creation_id":"${igfeed}" }")"; [ "$igfeed" ] && printf %b "\n -- \e[92msuccess\e[0m ! $igfeed \n"; sleep 1; 
 ####
@@ -141,7 +151,8 @@ igfeed2="$(curl -sX POST "https://graph.instagram.com/v25.0/"${igaccount}"/media
 ####
 #### post to stories 
 ####
-printf %b "\n -- uploading from url: $igstoryurl\n -- to stories ...\n"; igstory="$(curl -sX POST "https://graph.instagram.com/v25.0/${igaccount}/media" -F "media_type=STORIES" -F "image_url=${igstoryurl}" -F "access_token=${igtoken}"|cut -f2- -d":"|tr -d '\"{}')"; 
+printf %b "\n -- uploading from url: $igstoryurl\n -- to stories --\n\n"; 
+igstory="$(curl -sX POST "https://graph.instagram.com/v25.0/${igaccount}/media" -F "media_type=STORIES" -F "image_url=${igstoryurl}" -F "access_token=${igtoken}"|cut -f2- -d":"|tr -d '\"{}')"; 
 echo "15"; for i in {1..15}; do echo "$i"; sleep 1; done; 
 igstory2="$(curl -sX POST "https://graph.instagram.com/v25.0/"${igaccount}"/media_publish" -H "Content-Type: application/json" -H "Authorization: Bearer "${igtoken}"" -d "{ "creation_id":"${igstory}" }")"; 
 ####
