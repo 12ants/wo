@@ -82,14 +82,14 @@ pwdd="$(pwd)"; cd ${wfol}/page;
 printf %b "\n\n -- run from: $0 -- wfol=$wfol\n\n -- $ww --\n\n"; 
 ##########################
 done; 
-date --rfc-email| tee -a $HOME/logs/wl.log; 
+(date --rfc-email; echo $0/$ww)|tee -a $HOME/logs/wl.log; 
 ##########################
 sleep 125; #### to be on the safe side 
 cd $wfol; 
 git add ./; git commit -a -m "${USER}_${modo//\ /}" -v; git pull; git push; 
-date --rfc-email| tee -a $HOME/logs/wl.log; 
+(date --rfc-email; echo $0/$ww)|tee -a $HOME/logs/wl.log; 
 sleep 11; 
-npx wrangler --cwd $wfol/page pages deploy ./; echo; 
+## npx wrangler --cwd $wfol/page pages deploy ./; echo; 
 ####
 ############################################################################################################
 ############################################################################################################
@@ -127,6 +127,7 @@ else printf %b "\n -- error @ "; date --rfc-email; return 0; fi;
 printf %b "\n -- uploading token to FEED: $ig_feed\n"; 
 ####
 ig_feed2="$(curl -sX POST "https://graph.instagram.com/v25.0/"${ig_account}"/media_publish" -H "Content-Type: application/json" -H "Authorization: Bearer "${ig_token}"" -d "{ "creation_id":"${ig_feed}" }")"; 
+(date --rfc-email; echo $0/$ww)|tee -a $HOME/logs/wl.log; 
 ####
 if [ $ig_feed2 ]; then printf %b "\n -- \e[92msuccess\e[0m ! \n"; fi; 
 ####
@@ -148,3 +149,4 @@ if [ $ig_story2 ]; then printf %b "\n -- \e[92msuccess\e[0m ! \n"; fi;
 ##########################
 printf %b "\n -- gg\n\n\n"; 
 ##########################
+(date --rfc-email; echo end/$0/$ww)|tee -a $HOME/logs/wl.log; 
