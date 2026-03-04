@@ -84,11 +84,11 @@ printf %b "\n\n -- run from: $0 -- wfol=$wfol\n\n -- $ww --\n\n";
 done; 
 (date --rfc-email; echo $0/$ww)|tee -a $HOME/logs/wl.log; 
 ##########################
-sleep 125; #### to be on the safe side 
+# sleep 125; #### to be on the safe side 
 cd $wfol; 
 git add ./; git commit -a -m "${USER}_${modo//\ /}" -v; git pull; git push; 
 (date --rfc-email; echo $0/$ww)|tee -a $HOME/logs/wl.log; 
-sleep 11; 
+# sleep 11; 
 ## npx wrangler --cwd $wfol/page pages deploy ./; echo; 
 ####
 ############################################################################################################
@@ -110,13 +110,18 @@ ig_cap="$(sed -n 4p $wfol/w/${ig_word/.*/}.log)";
 ig_account="17841477140456200"; 
 ig_token="IGAAIcnwJCEa1BZAFktNTg4cWZAyZAXZAWb3VWWjNGbnRBZADBIYU5kakdmbmdGV2RHMkR3WDhpR2ppeXh5Mkc0VkdsVVdScFRRMllBWjFXTzdXemZAfTm9oa0xtTTBRQlJXVzBtTWlpX0pYbDB1ZADZAiUUJUVEpRQmt2Um5MSWpFR2pVawZDZD"; 
 ##########################
+ig_f="$(curl -X POST "https://anh.moe/api/1/upload" -H "X-API-Key: anh.moe_public_api" -F "source=@${wfol}/${ig_word}" -F "format=json" -s|sed -e "s/\,/\n/g" -e "s/\\\//g" -e 's/\"//g'|grep -e 'url:' -m1|cut -f2- -d":")"; 
+##########################
+ig_s="$(curl -X POST "https://anh.moe/api/1/upload" -H "X-API-Key: anh.moe_public_api" -F "source=@${wfol}/s/${ig_word}" -F "format=json" -s|sed -e "s/\,/\n/g" -e "s/\\\//g" -e 's/\"//g'|grep -e 'url:' -m1|cut -f2- -d":")"; 
+##########################
 printf %b "\n -- image2ig.sh\n -- ${ig_word}\n -- ${ig_cap}\n -- loading  ... \n" | tee -a $HOME/logs/wl.log; 
 printf %b "\n -- uploading from url: $ig_url/img/$ig_word\n -- to ig_feed ... \n" | tee -a $HOME/logs/wl.log; 
 ####
 cd ${wfol}/page; 
 ####
+for i in {1..8}; do printf %b "$i"; sleep 1; done; echo; 
 #### post to feed 
-ig_feed="$(curl -sX POST "https://graph.instagram.com/v25.0/${ig_account}/media" -F "image_url=${ig_url}/img/${ig_word}" -F "caption=${ig_cap}" -F "access_token=${ig_token}"|cut -f2- -d":"|tr -d '\"{}')"; 
+ig_feed="$(curl -sX POST "https://graph.instagram.com/v25.0/${ig_account}/media" -F "image_url=${ig_f}" -F "caption=${ig_cap}" -F "access_token=${ig_token}"|cut -f2- -d":"|tr -d '\"{}')"; 
 ####
 if [ $ig_feed ]; then printf %b "\n -- \e[92msuccess\e[0m ! \n"; 
 printf %b " -- counting to 5 ... "; for i in {1..5}; do printf %b "$i "; sleep 1; done; printf %b " ok \n"; 
@@ -136,7 +141,7 @@ printf %b "\n -- counting to 5 ... "; for i in {1..5}; do printf %b "$i "; sleep
 #### post to stories 
 printf %b "\n -- uploading from url: $ig_url/img/s/$ig_word\n -- to stories ...\n"; 
 ####
-ig_story="$(curl -sX POST "https://graph.instagram.com/v25.0/${ig_account}/media" -F "media_type=STORIES" -F "image_url=${ig_url}/img/s/${ig_word}" -F "access_token=${ig_token}"|cut -f2- -d":"|tr -d '\"{}')"; 
+ig_story="$(curl -sX POST "https://graph.instagram.com/v25.0/${ig_account}/media" -F "media_type=STORIES" -F "image_url=${ig_s}" -F "access_token=${ig_token}"|cut -f2- -d":"|tr -d '\"{}')"; 
 ####
 if [ $ig_story ]; then printf %b "\n -- \e[92msuccess\e[0m ! \n"; fi; 
 ####
@@ -150,3 +155,6 @@ if [ $ig_story2 ]; then printf %b "\n -- \e[92msuccess\e[0m ! \n"; fi;
 printf %b "\n -- gg\n\n\n"; 
 ##########################
 (date --rfc-email; echo end/$0/$ww)|tee -a $HOME/logs/wl.log; 
+
+
+# upgg() { uukk="$@"; [ -z $uukk ] && printf %b "\n\n\e[Aimage:"; read -rep ' ' -i "$PWD/" "uukk"; kk="$(curl -X POST "https://anh.moe/api/1/upload" -H "X-API-Key: anh.moe_public_api" -F "source=@${uukk}" -F "format=json" -s|sed -e "s/\,/\n/g" -e "s/\\\//g" -e 's/\"//g'|grep -e 'url:' -m1|cut -f2- -d":")"; echo; printf %b "$kk"; echo; }; 
