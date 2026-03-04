@@ -12,12 +12,13 @@ mkdir -pm 775 $wfol/page/img/s 2>/dev/null;
 mkdir -pm 775 $wfol/log 2>/dev/null; 
 mkdir -pm 775 $wfol/up 2>/dev/null; 
 ######### word variables #
-wimg=($(basename -s ".jpg" $wfol/page/img/*)); 
+mv $wfol/page/img/* -t $HOME/logs/t 2>/dev/null; 
+########
 wlog=($(basename -s ".log" $wfol/w/*)); 
 wzup=($(basename -s ".log" $wfol/up/*)); 
 word="$(printf %b "${log[*]}"|tr " " "\n"|grep -vwE "${gre[*]}"|shuf -n1)"; 
 ##########################
-wo="$(while :; do new="$(shuf -en1 ${wlog[*]})"; printf %b "${wimg[*]}"|grep -qwe ${new} || break; done; printf %b "$new")"; 
+wo="$(while :; do new="$(shuf -en1 ${wlog[*]})"; printf %b "${wzup[*]}"|grep -qwe ${new} || break; done; printf %b "$new")"; 
 ##########################
 for ww in ${wo[*]}; do 
 #### PRINT PANGO FILE ####
@@ -84,7 +85,9 @@ done;
 ##########################
 sleep 125; #### to be on the safe side 
 cd $wfol; 
-git add ./; git commit -a -m "${USER}_${modo//\ /}" -v; git pull; git push; sleep 11; npx wrangler --cwd $wfol/page pages deploy ./; echo; 
+git add ./; git commit -a -m "${USER}_${modo//\ /}" -v; git pull; git push; 
+sleep 11; 
+npx wrangler --cwd $wfol/page pages deploy ./; echo; 
 ####
 ############################################################################################################
 ############################################################################################################
