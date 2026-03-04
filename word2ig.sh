@@ -82,10 +82,12 @@ pwdd="$(pwd)"; cd ${wfol}/page;
 printf %b "\n\n -- run from: $0 -- wfol=$wfol\n\n -- $ww --\n\n"; 
 ##########################
 done; 
+date --rfc-email| tee -a $HOME/logs/wl.log; 
 ##########################
 sleep 125; #### to be on the safe side 
 cd $wfol; 
 git add ./; git commit -a -m "${USER}_${modo//\ /}" -v; git pull; git push; 
+date --rfc-email| tee -a $HOME/logs/wl.log; 
 sleep 11; 
 npx wrangler --cwd $wfol/page pages deploy ./; echo; 
 ####
