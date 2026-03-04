@@ -69,12 +69,12 @@ convert -gravity center -background "#f5f5f5" "${wfol}/log/${ww}.jpg" -extent ${
 echo; echo $((ko++)); echo; 
 convert ${wfol}/img/${ww}_p.jpg -resize 1440 ${wfol}/img/${ww}.jpg 2>/dev/null; 
 rm ${wfol}/img/${ww}_p.jpg 2>/dev/null; 
-rm ${wfol}/img/s/${ww}_p.jpg 2>/dev/null; 
 ##########################
 echo; echo $((ko++)); echo; 
 ##########################
 convert -gravity center -background "#f5f5f5" "${wfol}/log/${ww}.jpg" -extent ${mz}x${mz16} ${wfol}/img/s/${ww}_p.jpg 2>/dev/null;
 convert ${wfol}/img/s/${ww}_p.jpg -resize 1440 ${wfol}/img/s/${ww}.jpg 2>/dev/null; 
+rm ${wfol}/img/s/${ww}_p.jpg; 
 ##########################
 echo; echo $((ko++)); echo; 
 ##########################
