@@ -80,17 +80,21 @@ pwdd="$(pwd)"; cd ${wfol}/page;
 ##########################
 printf %b "\n\n -- run from: $0 -- wfol=$wfol\n\n -- $ww --\n\n"; 
 ##########################
-cd $wfol/page; sleep 1; npx wrangler --cwd $wfol/page pages deploy ./; echo; 
+cd $wfol; 
+git add ./; git commit -a -m "${USER}_${modo//\ /}" -v; git pull; git push; 
+sleep 11; 
+npx wrangler --cwd $wfol/page pages deploy ./; echo; 
 ##########################
 done; 
-sleep 5; 
+sleep 25; 
 ####
 ####
 #### UPLOADER ####
 ####
 IFS=$' \n\t'; 
 ####
-ig_url="https://main.wowowords.pages.dev"; 
+###### ig_url="https://main.wowowords.pages.dev"; 
+ig_url="https://zzzzwords.pages.dev"; 
 ####
 if printf %b "$0"|grep -q "bash"; 
 then wfol="${PWD}"; 
