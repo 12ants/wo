@@ -49,10 +49,10 @@ echo "  "|ansifilter -s 40 -M;
 ) > $wfol/log/$ww.xml; 
 ##########################
 ##########################
-echo $((ko++)); 
+echo; echo $((ko++)); echo; 
 convert -gravity center -background "#f5f5f5" pango:"$(cat $wfol/log/$ww.xml)" "${wfol}/log/${ww}.jpg" 2>/dev/null; 
 ##########################
-echo $((ko++)); 
+echo; echo $((ko++)); echo; 
 ##########################
 me="${wfol}/log/${ww}.jpg";
 mw="$(mediainfo "${wfol}/log/${ww}.jpg" | grep -E 'Width'  | tr -d " :A-z")"; 
@@ -66,26 +66,30 @@ mz="$((mx + mz1))";
 mz16="$((mz * 16 / 9))"; 
 ##########################
 convert -gravity center -background "#f5f5f5" "${wfol}/log/${ww}.jpg" -extent ${mz}x${mz} ${wfol}/img/${ww}_p.jpg 2>/dev/null; 
-echo kk; 
+echo; echo $((ko++)); echo; 
 convert ${wfol}/img/${ww}_p.jpg -resize 1440 ${wfol}/img/${ww}.jpg 2>/dev/null; 
 rm ${wfol}/img/${ww}_p.jpg 2>/dev/null; 
 ##########################
-echo $((ko++)); 
+echo $((ko++)); echo; 
 ##########################
 convert -gravity center -background "#f5f5f5" "${wfol}/log/${ww}.jpg" -extent ${mz}x${mz16} ${wfol}/img/s/${ww}_p.jpg 2>/dev/null;
 convert ${wfol}/img/s/${ww}_p.jpg -resize 1440 ${wfol}/img/s/${ww}.jpg 2>/dev/null; 
 ##########################
-echo $((ko++)); 
+echo; echo $((ko++)); echo; 
 ##########################
 rm "${wfol}/log/${ww}.jpg" "${wfol}/log/${ww}.xml"; 
+
 cp $wfol/w/$ww.log $wfol/up/$ww.log 2>/dev/null; 
+printf %b "\n-\e222b"; 
 ##########################
 sed -i '/<\/div><\/body><\/html>/d' $wfol/index.html; 
 ##########################
 printf %b "\n-\e[222b\n$(date --rfc-email)\n$ww\n" >> $HOME/logs/wlog.log; 
-printf %b "<br><hl><br><code>$(cat ${wfol}/w/${ww}.log|sed "i<br>")</code><br><img src="/img/${ww}.jpg"><br><hl>
+##########################
+printf %b "<br><hl><br><div class="kk"><code>$(cat ${wfol}/w/${ww}.log|sed "i<br>")</code><br><img src="/img/${ww}.jpg"></div><br><hl><br>
 </div></body></html>
 "|tee -a ${wfol}/index.html; 
+printf %b "-\e222b\n\n"; 
 pwdd="$(pwd)"; cd ${wfol}; 
 ##########################
 printf %b "\n\n -- run from: $wfol\n -- $ww --\n\n"; 
@@ -115,6 +119,9 @@ iimgf="$HOME/gh/iimg";
 ##########################
 cp $wfol/img/$igword -t $iimgf; 
 cp $wfol/img/s/$igword -t $iimgf/s; 
+rm $wfol/img/s/$igword;  
+rm $wfol/img/$igword;  
+##########################
 cd $iimgf; 
 git add ./; 
 git commit -a -m gg; 
