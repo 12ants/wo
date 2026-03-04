@@ -2,14 +2,14 @@
 ##########################
 IFS=$' \n\t'; 
 ##########################
-if printf %b "$0"|grep -q "bash"; 
+if printf %b "$0"|grep -qE "bash|-bash"; 
 then wfol="${PWD}"; 
 else wfol="${0%/*}"; 
-fi; cd $wfol; 
+fi; cd $wfol; ko=0; 
 ##########################
 ######### get word #######
-mv $wfol/page/img/* -t $HOME/logs/t 2>/dev/null; 
-mkdir -pm 775 $wfol/page/img/s 2>/dev/null; 
+mv $wfol/img/* -t $HOME/logs/t 2>/dev/null; 
+mkdir -pm 775 $wfol/img/s 2>/dev/null; 
 mkdir -pm 775 $wfol/log 2>/dev/null; 
 mkdir -pm 775 $wfol/up 2>/dev/null; 
 ######### word variables #
@@ -20,6 +20,8 @@ word="$(printf %b "${log[*]}"|tr " " "\n"|grep -vwE "${gre[*]}"|shuf -n1)";
 ##########################
 wo="$(while :; do new="$(shuf -en1 ${wlog[*]})"; printf %b "${wzup[*]}"|grep -qwe ${new} || break; done; printf %b "$new")"; 
 ##########################
+printf %b "\n---- $wo ----\n"; 
+##########################
 for ww in ${wo[*]}; do 
 #### PRINT PANGO FILE ####
 #### WORD ################
@@ -27,7 +29,7 @@ for ww in ${wo[*]}; do
 | ansifilter -F serif -s 270 -M; 
 echo "  "| ansifilter -s 24 -M; 
 ##########################
-#### PHONETITS ###########
+#### PHONETICS ###########
 (printf %b "\e[38;5;249m[\e[0m"; 
 sed -n 2p $wfol/w/$ww.log|bat -ppf --language d --theme "TwoDark"|tr -d "\n"; 
 printf %b "\e[38;5;249m]") \
@@ -47,7 +49,10 @@ echo "  "|ansifilter -s 40 -M;
 ) > $wfol/log/$ww.xml; 
 ##########################
 ##########################
+echo $((ko++)); 
 convert -gravity center -background "#f5f5f5" pango:"$(cat $wfol/log/$ww.xml)" "${wfol}/log/${ww}.jpg" 2>/dev/null; 
+##########################
+echo $((ko++)); 
 ##########################
 me="${wfol}/log/${ww}.jpg";
 mw="$(mediainfo "${wfol}/log/${ww}.jpg" | grep -E 'Width'  | tr -d " :A-z")"; 
@@ -60,101 +65,82 @@ mz1="$((mx / 2 + 850))";
 mz="$((mx + mz1))"; 
 mz16="$((mz * 16 / 9))"; 
 ##########################
-convert -gravity center -background "#f5f5f5" "${wfol}/log/${ww}.jpg" -extent ${mz}x${mz} ${wfol}/page/img/${ww}_p.jpg 2>/dev/null; 
-convert ${wfol}/page/img/${ww}_p.jpg -resize 1440 ${wfol}/page/img/${ww}.jpg 2>/dev/null; 
-rm ${wfol}/page/img/${ww}_p.jpg 2>/dev/null;
+convert -gravity center -background "#f5f5f5" "${wfol}/log/${ww}.jpg" -extent ${mz}x${mz} ${wfol}/img/${ww}_p.jpg 2>/dev/null; 
+echo kk; 
+convert ${wfol}/img/${ww}_p.jpg -resize 1440 ${wfol}/img/${ww}.jpg 2>/dev/null; 
+rm ${wfol}/img/${ww}_p.jpg 2>/dev/null; 
 ##########################
-convert -gravity center -background "#f5f5f5" "${wfol}/log/${ww}.jpg" -extent ${mz}x${mz16} ${wfol}/page/img/s/${ww}_p.jpg 2>/dev/null;
-convert ${wfol}/page/img/s/${ww}_p.jpg -resize 1440 ${wfol}/page/img/s/${ww}.jpg 2>/dev/null; 
+echo $((ko++)); 
 ##########################
-rm ${wfol}/page/img/s/${ww}_p.jpg 2>/dev/null; 
+convert -gravity center -background "#f5f5f5" "${wfol}/log/${ww}.jpg" -extent ${mz}x${mz16} ${wfol}/img/s/${ww}_p.jpg 2>/dev/null;
+convert ${wfol}/img/s/${ww}_p.jpg -resize 1440 ${wfol}/img/s/${ww}.jpg 2>/dev/null; 
+##########################
+echo $((ko++)); 
+##########################
 rm "${wfol}/log/${ww}.jpg" "${wfol}/log/${ww}.xml"; 
 cp $wfol/w/$ww.log $wfol/up/$ww.log 2>/dev/null; 
 ##########################
-sed -i '/<\/div><\/body><\/html>/d' $wfol/page/index.html; 
+sed -i '/<\/div><\/body><\/html>/d' $wfol/index.html; 
 ##########################
 printf %b "\n-\e[222b\n$(date --rfc-email)\n$ww\n" >> $HOME/logs/wlog.log; 
 printf %b "<br><hl><br><code>$(cat ${wfol}/w/${ww}.log|sed "i<br>")</code><br><img src="/img/${ww}.jpg"><br><hl>
 </div></body></html>
-"|tee -a ${wfol}/page/index.html; 
-pwdd="$(pwd)"; cd ${wfol}/page; 
+"|tee -a ${wfol}/index.html; 
+pwdd="$(pwd)"; cd ${wfol}; 
 ##########################
-printf %b "\n\n -- run from: $0 -- wfol=$wfol\n\n -- $ww --\n\n"; 
+printf %b "\n\n -- run from: $wfol\n -- $ww --\n\n"; 
 ##########################
 done; 
-(date --rfc-email; echo $0/$ww)|tee -a $HOME/logs/wl.log; 
 ##########################
-# sleep 125; #### to be on the safe side 
+echo $((ko++)); 
+(date --rfc-email; echo $wfol/$igword)|tee -a $HOME/logs/wl.log; 
+##########################
 cd $wfol; 
-git add ./; git commit -a -m "${USER}_${modo//\ /}" -v; git pull; git push; 
-(date --rfc-email; echo $0/$ww)|tee -a $HOME/logs/wl.log; 
-# sleep 11; 
-## npx wrangler --cwd $wfol/page pages deploy ./; echo; 
+##########################
+(date --rfc-email; echo $wfol/$igword)|tee -a $HOME/logs/wl.log; 
 ####
-############################################################################################################
-############################################################################################################
+##########################
 ####
 #### UPLOADER ####
 ####
 IFS=$' \n\t'; 
-####
-ig_url="https://zzzzwords.pages.dev"; 
-####
-if printf %b "$0"|grep -q "bash"; 
-then wfol="${PWD}"; 
-else wfol="${0%/*}"; 
-fi; cd $wfol; 
 ##########################
-ig_word="$(ls -1rt --group-directories-first $wfol/page/img|tail -n1)"; 
-ig_cap="$(sed -n 4p $wfol/w/${ig_word/.*/}.log)"; 
-ig_account="17841477140456200"; 
-ig_token="IGAAIcnwJCEa1BZAFktNTg4cWZAyZAXZAWb3VWWjNGbnRBZADBIYU5kakdmbmdGV2RHMkR3WDhpR2ppeXh5Mkc0VkdsVVdScFRRMllBWjFXTzdXemZAfTm9oa0xtTTBRQlJXVzBtTWlpX0pYbDB1ZADZAiUUJUVEpRQmt2Um5MSWpFR2pVawZDZD"; 
+if printf %b "$0"|grep -qE "bash|-bash"; then wfol="${PWD}"; else wfol="${0%/*}"; fi; cd $wfol; 
 ##########################
-ig_f="$(curl -X POST "https://anh.moe/api/1/upload" -H "X-API-Key: anh.moe_public_api" -F "source=@${wfol}/${ig_word}" -F "format=json" -s|sed -e "s/\,/\n/g" -e "s/\\\//g" -e 's/\"//g'|grep -e 'url:' -m1|cut -f2- -d":")"; 
+igword="$(ls -1rt --group-directories-first $wfol/img|tail -n1)"; igcap="$(sed -n 4p $wfol/w/${igword/.*/}.log)"; igaccount="17841477140456200"; igtoken="IGAAIcnwJCEa1BZAFktNTg4cWZAyZAXZAWb3VWWjNGbnRBZADBIYU5kakdmbmdGV2RHMkR3WDhpR2ppeXh5Mkc0VkdsVVdScFRRMllBWjFXTzdXemZAfTm9oa0xtTTBRQlJXVzBtTWlpX0pYbDB1ZADZAiUUJUVEpRQmt2Um5MSWpFR2pVawZDZD"; 
 ##########################
-ig_s="$(curl -X POST "https://anh.moe/api/1/upload" -H "X-API-Key: anh.moe_public_api" -F "source=@${wfol}/s/${ig_word}" -F "format=json" -s|sed -e "s/\,/\n/g" -e "s/\\\//g" -e 's/\"//g'|grep -e 'url:' -m1|cut -f2- -d":")"; 
+echo $((ko++)); 
 ##########################
-printf %b "\n -- image2ig.sh\n -- ${ig_word}\n -- ${ig_cap}\n -- loading  ... \n" | tee -a $HOME/logs/wl.log; 
-printf %b "\n -- uploading from url: $ig_url/img/$ig_word\n -- to ig_feed ... \n" | tee -a $HOME/logs/wl.log; 
+iimgf="$HOME/gh/iimg"; 
+##########################
+cp $wfol/img/$igword -t $iimgf; 
+cp $wfol/img/s/$igword -t $iimgf/s; 
+cd $iimgf; 
+git add ./; 
+git commit -a -m gg; 
+git push; 
+echo; 
+cd $OLDPWD; 
+for i in {1..18}; do echo "$i"; sleep 1; done; echo;
+##########################
+igfeedurl="https://raw.githubusercontent.com/12ants/iimg/main/${igword}"; igstoryurl="https://raw.githubusercontent.com/12ants/iimg/main/s/${igword}"; printf %b "\n--\n"; printf %b "feed  - $igfeedurl\n"; printf %b "\n--\n"; printf %b "story - $igstoryurl\n"; 
 ####
-cd ${wfol}/page; 
-####
-for i in {1..8}; do printf %b "$i"; sleep 1; done; echo; 
 #### post to feed 
-ig_feed="$(curl -sX POST "https://graph.instagram.com/v25.0/${ig_account}/media" -F "image_url=${ig_f}" -F "caption=${ig_cap}" -F "access_token=${ig_token}"|cut -f2- -d":"|tr -d '\"{}')"; 
-####
-if [ $ig_feed ]; then printf %b "\n -- \e[92msuccess\e[0m ! \n"; 
-printf %b " -- counting to 5 ... "; for i in {1..5}; do printf %b "$i "; sleep 1; done; printf %b " ok \n"; 
-####
-else printf %b "\n -- error @ "; date --rfc-email; return 0; fi; 
+for i in {1..8}; do printf %b "$i"; sleep 1; done; printf %b "\n -- uploading from url: $igfeedurl\n -- to stories ...\n"; igfeed="$(curl -sX POST "https://graph.instagram.com/v25.0/${igaccount}/media" -F "image_url=${igfeedurl}" -F "caption=${igcap}" -F "access_token=${igtoken}"|cut -f2- -d":"|tr -d '\"{}')"; 
+echo "15"; for i in {1..15}; do echo "$i"; sleep 1; done; 
+igfeed2="$(curl -sX POST "https://graph.instagram.com/v25.0/"${igaccount}"/media_publish" -H "Content-Type: application/json" -H "Authorization: Bearer "${igtoken}"" -d "{ "creation_id":"${igfeed}" }")"; [ "$igfeed" ] && printf %b "\n -- \e[92msuccess\e[0m ! $igfeed \n"; sleep 1; 
 ####
 ####
-printf %b "\n -- uploading token to FEED: $ig_feed\n"; 
-####
-ig_feed2="$(curl -sX POST "https://graph.instagram.com/v25.0/"${ig_account}"/media_publish" -H "Content-Type: application/json" -H "Authorization: Bearer "${ig_token}"" -d "{ "creation_id":"${ig_feed}" }")"; 
-(date --rfc-email; echo $0/$ww)|tee -a $HOME/logs/wl.log; 
-####
-if [ $ig_feed2 ]; then printf %b "\n -- \e[92msuccess\e[0m ! \n"; fi; 
-####
-printf %b "\n -- counting to 5 ... "; for i in {1..5}; do printf %b "$i "; sleep 1; done; printf %b " -- gg\n"; 
 ####
 #### post to stories 
-printf %b "\n -- uploading from url: $ig_url/img/s/$ig_word\n -- to stories ...\n"; 
 ####
-ig_story="$(curl -sX POST "https://graph.instagram.com/v25.0/${ig_account}/media" -F "media_type=STORIES" -F "image_url=${ig_s}" -F "access_token=${ig_token}"|cut -f2- -d":"|tr -d '\"{}')"; 
+printf %b "\n -- uploading from url: $igstoryurl\n -- to stories ...\n"; igstory="$(curl -sX POST "https://graph.instagram.com/v25.0/${igaccount}/media" -F "media_type=STORIES" -F "image_url=${igstoryurl}" -F "access_token=${igtoken}"|cut -f2- -d":"|tr -d '\"{}')"; 
+echo "15"; for i in {1..15}; do echo "$i"; sleep 1; done; 
+igstory2="$(curl -sX POST "https://graph.instagram.com/v25.0/"${igaccount}"/media_publish" -H "Content-Type: application/json" -H "Authorization: Bearer "${igtoken}"" -d "{ "creation_id":"${igstory}" }")"; 
 ####
-if [ $ig_story ]; then printf %b "\n -- \e[92msuccess\e[0m ! \n"; fi; 
-####
-printf %b "\n -- counting to 5 ... "; for i in {1..5}; do printf %b "$i "; sleep 1; done; printf %b " -- gg\n"; 
-####
-printf %b "\n -- uploading token to STORIES: $ig_story\n"; 
-####
-ig_story2="$(curl -sX POST "https://graph.instagram.com/v25.0/"${ig_account}"/media_publish" -H "Content-Type: application/json" -H "Authorization: Bearer "${ig_token}"" -d "{ "creation_id":"${ig_story}" }")"; 
-if [ $ig_story2 ]; then printf %b "\n -- \e[92msuccess\e[0m ! \n"; fi; 
+printf %b "\n -- uploading token to STORIES: $igstory2\n"; 
 ##########################
-printf %b "\n -- gg\n\n\n"; 
 ##########################
-(date --rfc-email; echo end/$0/$ww)|tee -a $HOME/logs/wl.log; 
-
-
-# upgg() { uukk="$@"; [ -z $uukk ] && printf %b "\n\n\e[Aimage:"; read -rep ' ' -i "$PWD/" "uukk"; kk="$(curl -X POST "https://anh.moe/api/1/upload" -H "X-API-Key: anh.moe_public_api" -F "source=@${uukk}" -F "format=json" -s|sed -e "s/\,/\n/g" -e "s/\\\//g" -e 's/\"//g'|grep -e 'url:' -m1|cut -f2- -d":")"; echo; printf %b "$kk"; echo; }; 
+(date --rfc-email; echo -e "\ndone\n$wfol/$igword\ndone\n")|tee -a $HOME/logs/wl.log; 
+##########################
+##########################
