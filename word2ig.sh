@@ -102,7 +102,7 @@ echo; echo $((ko++)); echo;
 ##########################
 cd $wfol; 
 ##########################
-(date --rfc-email; echo $wfol/$igword)|tee -a $HOME/logs/wl.log; 
+(date --rfc-email; echo -e "CREATED IMAGE - $wfol/$igword")|tee -a $HOME/logs/wl.log; 
 ####
 ##########################
 ####
